@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-from neuralprocesses import GaussianParams
+from neural_process import GaussianParams
 
 
 def KLqp_gaussian(mu_q: tf.Tensor, sigma_q: tf.Tensor, mu_p: tf.Tensor, sigma_p: tf.Tensor) -> tf.Tensor:

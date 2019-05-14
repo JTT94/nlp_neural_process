@@ -3,8 +3,8 @@ from typing import Optional
 import numpy as np
 import tensorflow as tf
 
-from neuralprocesses import GaussianParams, NeuralProcessParams
-from neuralprocesses.network import decoder_g, xy_to_z_params
+from neural_process import GaussianParams, NeuralProcessParams
+from neural_process.network import decoder_g, xy_to_z_params
 
 
 def prior_predict(input_xs_value: np.array, params: NeuralProcessParams,

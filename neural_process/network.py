@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-from neuralprocesses import GaussianParams, NeuralProcessParams
+from neural_process import GaussianParams, NeuralProcessParams
 
 
 def encoder_h(context_xys: tf.Tensor, params: NeuralProcessParams) -> tf.Tensor:

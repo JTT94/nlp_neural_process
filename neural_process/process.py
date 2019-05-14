@@ -1,8 +1,8 @@
 import tensorflow as tf
 
-from neuralprocesses import NeuralProcessParams
-from neuralprocesses.loss import loglikelihood, KLqp_gaussian
-from neuralprocesses.network import xy_to_z_params, decoder_g
+from neural_process import NeuralProcessParams
+from neural_process.loss import loglikelihood, KLqp_gaussian
+from neural_process.network import xy_to_z_params, decoder_g
 
 
 def init_neural_process(context_xs: tf.Tensor, context_ys: tf.Tensor,
