@@ -33,7 +33,7 @@ def model_fn_builder(create_model, num_labels, learning_rate, num_train_steps,
         if mode == tf.estimator.ModeKeys.TRAIN:
             return tf.estimator.EstimatorSpec(mode=mode, loss=loss, train_op=train_op)
         elif mode == tf.estimator.ModeKeys.PREDICT:
-            return tf.estimator.EstimatorSpec(predictions={'prediction_mean': ystar, 'prediction_var': variance})
+            return tf.estimator.EstimatorSpec(mode=mode, predictions={'prediction_mean': ystar, 'prediction_var': variance})
         else:
             return tf.estimator.EstimatorSpec(mode=mode, loss=loss, eval_metric_ops=eval_metrics)
         # Return the actual model function in the closure
