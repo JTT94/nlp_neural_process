@@ -19,11 +19,11 @@ def model_fn_builder(create_model, num_labels, learning_rate, num_train_steps,
 
     # Calculate evaluation metrics.
         def metric_fn(pred_scores, real_scores, trait_num):
-            auc_value = tf.metrics.auc(pred_scores[:,trait_num], real_scores[:,trait_num])
+            auc_value = tf.metrics.auc(real_scores[:,trait_num], pred_scores[:,trait_num])
             return {"auc"+str(trait_num): auc_value}
         ystar, variance = tf.nn.moments(y.mu,[0])
 
-        labels = tf.math.round(target_ys)
+        labels = target_ys # need to round them if true labels are not 1 or 0
         eval_metrics_lst = [metric_fn(ystar, labels, trait_num) for trait_num in range(num_labels)]
         eval_metrics = {}
         for d in eval_metrics_lst:
