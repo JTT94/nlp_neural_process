@@ -6,7 +6,7 @@ from neural_process.loss import *
 from neural_process.predict import *
 from neural_process.process import *
 from neural_process.bert_utils import *
-
+from tensorflow_probability import distributions as tfd
 
 def encoder_h(context_xys: tf.Tensor, params: NeuralProcessParams) -> tf.Tensor:
     """Map context inputs (x_i, y_i) to r_i
