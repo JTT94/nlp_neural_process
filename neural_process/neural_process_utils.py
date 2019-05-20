@@ -92,7 +92,7 @@ def get_z_params(context_r: tf.Tensor, params: NeuralProcessParams) -> GaussianP
     return GaussianParams(mu, sigma)
 
 
-def decoder_g(input_xs_embedding, z_samples: tf.Tensor, num_labels: int=6, params: NeuralProcessParams) -> GaussianParams:
+def decoder_g(input_xs_embedding, z_samples: tf.Tensor, num_labels: int, params: NeuralProcessParams) -> GaussianParams:
     """Determine output y* by decoding input and latent variable
 
     Creates a fully connected network with a single sigmoid hidden layer and linear output layer.

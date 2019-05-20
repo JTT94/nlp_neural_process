@@ -1,7 +1,6 @@
 import tensorflow as tf
 import bert
 
-
 def model_fn_builder(create_model, num_labels, learning_rate, params, num_train_steps,
                      num_warmup_steps):
     """Returns `model_fn` closure for TPUEstimator."""
