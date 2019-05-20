@@ -1,11 +1,11 @@
 import tensorflow as tf
 import bert
 
-def model_fn_builder(create_model, num_labels, learning_rate, params, num_train_steps,
+def model_fn_builder(create_model, num_labels, learning_rate, NPparams, num_train_steps,
                      num_warmup_steps):
     """Returns `model_fn` closure for TPUEstimator."""
 
-    def model_fn(features, mode):  # pylint: disable=unused-argument
+    def model_fn(features, mode, params):  # pylint: disable=unused-argument
         """The `model_fn` for TPUEstimator."""
 
         input_ids = features["input_ids"]
@@ -14,7 +14,7 @@ def model_fn_builder(create_model, num_labels, learning_rate, params, num_train_
         scores = features["scores"]
 
         (loss, posterior_predict, prior_predict, true_y) = create_model(input_ids, input_mask, segment_ids, num_labels,
-                                                                        scores, params)
+                                                                        scores, NPparams)
 
         train_op = bert.optimization.create_optimizer(loss, learning_rate, num_train_steps,
                                                       num_warmup_steps, use_tpu=False)
