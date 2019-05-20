@@ -199,7 +199,7 @@ def loglikelihood(y_star: tf.Tensor, y_pred_params: GaussianParams):
     return loglike
 
 
-def create_model(input_ids, input_mask, segment_ids, num_labels, scores, params, BERT_model_hub):
+def create_model(input_ids, input_mask, segment_ids, num_labels, scores, params, num_draws, BERT_model_hub):
     #     """Creates a classification model."""
 
     bert_module = hub.Module(BERT_model_hub, trainable=True)
