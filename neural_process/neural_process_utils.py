@@ -1,4 +1,5 @@
 import tensorflow as  tf
+import tensorflow_hub as hub
 from neural_process import split_context_target, NeuralProcessParams
 from neural_process.network import *
 from neural_process.loss import *
@@ -198,7 +199,7 @@ def loglikelihood(y_star: tf.Tensor, y_pred_params: GaussianParams):
     return loglike
 
 
-def create_model(input_ids, input_mask, segment_ids, num_labels, scores, params):
+def create_model(input_ids, input_mask, segment_ids, num_labels, scores, params, BERT_model_hub):
     #     """Creates a classification model."""
 
     bert_module = hub.Module(BERT_model_hub, trainable=True)
