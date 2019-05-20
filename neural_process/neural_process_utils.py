@@ -1,10 +1,10 @@
 import tensorflow as  tf
 from neural_process import split_context_target, NeuralProcessParams
-from network import *
-from loss import *
-from predict import *
-from process import *
-from bert_utils import *
+from neural_process.network import *
+from neural_process.loss import *
+from neural_process.predict import *
+from neural_process.process import *
+from neural_process.bert_utils import *
 
 
 def encoder_h(context_xys: tf.Tensor, params: NeuralProcessParams) -> tf.Tensor:
