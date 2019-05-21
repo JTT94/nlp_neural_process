@@ -104,6 +104,8 @@ def decoder_g(input_xs_embedding, z_samples: tf.Tensor, num_labels: int, params:
         Random samples from the latent variable distribution, shape: (n_z_draws, dim_z)
     input_xs
         Input values to predict for, shape: (n_x_samples, dim_x)
+    num_labels
+        Integer length of model output vector
     params
         Neural process parameters
     noise_std
