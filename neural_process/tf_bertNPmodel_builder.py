@@ -38,6 +38,7 @@ def model_fn_builder(create_model, num_labels, learning_rate, NPparams, BERT_mod
 
         for d in eval_metrics_lst:
             tf.summary.scalar(list(d.keys())[0], list(d.values())[0][1])  # make available to tensorboard
+            tf.summary.scalar(list(d.keys())[1], list(d.values())[1][1])  # make available to tensorboard
             eval_metrics.update(d)
 
         # returns
