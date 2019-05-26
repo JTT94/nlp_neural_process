@@ -142,7 +142,8 @@ def convert_single_example(ex_index, example, max_seq_length,
 
 
 #again, going to need to create an input_fn_builder that preserves score
-def input_fn_builder(features, seq_length, num_labels, is_training, drop_remainder):
+def input_fn_builder(features, seq_length, num_labels, is_training, drop_remainder,
+					  supplied_context_features=None):
 	"""Creates an `input_fn` closure to be passed to TPUEstimator."""
 
 	all_input_ids = []
@@ -156,36 +157,88 @@ def input_fn_builder(features, seq_length, num_labels, is_training, drop_remaind
 		all_segment_ids.append(feature.segment_ids)
 		all_scores.append(feature.score)
 
+	if supplied_context_features is not None:
+		supplied_context_input_ids = []
+		supplied_context_input_mask = []
+		supplied_context_segment_ids = []
+		supplied_context_scores = []
+
+		for feature in supplied_context_features:
+			supplied_context_input_ids.append(feature.input_ids)
+			supplied_context_input_mask.append(feature.input_mask)
+			supplied_context_segment_ids.append(feature.segment_ids)
+			supplied_context_scores.append(feature.score)
+
 	def input_fn(params):
 		"""The actual input function."""
 		batch_size = params["batch_size"]
 
 		num_examples = len(features)
 
-		d = tf.data.Dataset.from_tensor_slices({
-			"input_ids":
-				tf.constant(
-					all_input_ids, shape=[num_examples, seq_length],
-					dtype=tf.int32),
-			"input_mask":
-				tf.constant(
-					all_input_mask,
-					shape=[num_examples, seq_length],
-					dtype=tf.int32),
-			"segment_ids":
-				tf.constant(
-					all_segment_ids,
-					shape=[num_examples, seq_length],
-					dtype=tf.int32),
-			"scores":
-				tf.constant(all_scores, shape = [num_examples, num_labels]),
-		})
+		if supplied_context_features is not None:
+			num_context_examples = len(supplied_context_features)
+
+			d = tf.data.Dataset.from_tensor_slices({
+				"input_ids":
+					tf.constant(
+						all_input_ids, shape=[num_examples, seq_length],
+						dtype=tf.int32),
+				"input_mask":
+					tf.constant(
+						all_input_mask,
+						shape=[num_examples, seq_length],
+						dtype=tf.int32),
+				"segment_ids":
+					tf.constant(
+						all_segment_ids,
+						shape=[num_examples, seq_length],
+						dtype=tf.int32),
+				"scores":
+					tf.constant(all_scores, shape=[num_examples, num_labels]),
+				"supplied_context_input_ids":
+					tf.constant(
+						supplied_context_input_ids, shape=[num_context_examples, seq_length],
+						dtype=tf.int32),
+				"supplied_context_input_mask":
+					tf.constant(
+						supplied_context_input_mask,
+						shape=[num_context_examples, seq_length],
+						dtype=tf.int32),
+				"supplied_context_segment_ids":
+					tf.constant(
+						supplied_context_segment_ids,
+						shape=[num_context_examples, seq_length],
+						dtype=tf.int32),
+				"supplied_context_scores":
+					tf.constant(supplied_context_scores, shape=[num_context_examples, num_labels])
+			})
+
+		else:
+			d = tf.data.Dataset.from_tensor_slices({
+				"input_ids":
+					tf.constant(
+						all_input_ids, shape=[num_examples, seq_length],
+						dtype=tf.int32),
+				"input_mask":
+					tf.constant(
+						all_input_mask,
+						shape=[num_examples, seq_length],
+						dtype=tf.int32),
+				"segment_ids":
+					tf.constant(
+						all_segment_ids,
+						shape=[num_examples, seq_length],
+						dtype=tf.int32),
+				"scores":
+					tf.constant(all_scores, shape=[num_examples, num_labels])
+			})
 
 		if is_training:
 			d = d.repeat()
 			d = d.shuffle(buffer_size=100)
 
 		d = d.batch(batch_size=batch_size, drop_remainder=drop_remainder)
+
 		return d
 
 	return input_fn
