@@ -4,6 +4,7 @@ import bert
 from bert import run_classifier
 from bert import optimization
 from bert import tokenization
+import numpy as np
 
 # BERT model
 
@@ -169,6 +170,11 @@ def input_fn_builder(features, seq_length, num_labels, is_training, drop_remaind
 			supplied_context_segment_ids.append(feature.segment_ids)
 			supplied_context_scores.append(feature.score)
 
+		supplied_context_input_ids = np.tile(supplied_context_input_ids, (len(features), 1, 1))
+		supplied_context_input_mask = np.tile(supplied_context_input_mask, (len(features), 1, 1))
+		supplied_context_segment_ids = np.tile(supplied_context_segment_ids, (len(features), 1, 1))
+		supplied_context_scores = np.tile(supplied_context_scores, (len(features), 1, 1))
+
 	def input_fn(params):
 		"""The actual input function."""
 		batch_size = params["batch_size"]
@@ -194,23 +200,25 @@ def input_fn_builder(features, seq_length, num_labels, is_training, drop_remaind
 						shape=[num_examples, seq_length],
 						dtype=tf.int32),
 				"scores":
-					tf.constant(all_scores, shape=[num_examples, num_labels]),
+					tf.constant(all_scores, shape=[num_examples, num_labels],
+                        dtype=tf.float32),
 				"supplied_context_input_ids":
 					tf.constant(
-						supplied_context_input_ids, shape=[num_context_examples, seq_length],
+						supplied_context_input_ids, shape=[num_examples, num_context_examples, seq_length],
 						dtype=tf.int32),
 				"supplied_context_input_mask":
 					tf.constant(
 						supplied_context_input_mask,
-						shape=[num_context_examples, seq_length],
+						shape=[num_examples, num_context_examples, seq_length],
 						dtype=tf.int32),
 				"supplied_context_segment_ids":
 					tf.constant(
 						supplied_context_segment_ids,
-						shape=[num_context_examples, seq_length],
+						shape=[num_examples, num_context_examples, seq_length],
 						dtype=tf.int32),
 				"supplied_context_scores":
-					tf.constant(supplied_context_scores, shape=[num_context_examples, num_labels])
+					tf.constant(supplied_context_scores, shape=[num_examples, num_context_examples, num_labels],
+                        dtype=tf.float32)
 			})
 
 		else:
