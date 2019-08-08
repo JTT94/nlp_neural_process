@@ -243,6 +243,12 @@ def input_fn_builder(features, seq_length, num_labels, is_training, drop_remaind
 
 		if is_training:
 			d = d.repeat()
+			# filter
+			## choose category at random
+
+			## filter batch dataset to category
+
+
 			d = d.shuffle(buffer_size=100)
 
 		d = d.batch(batch_size=batch_size, drop_remainder=drop_remainder)
