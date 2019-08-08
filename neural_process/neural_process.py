@@ -3,12 +3,13 @@ import tensorflow as tf
 from tensorflow_probability import distributions as tfd
 import tensorflow_hub as hub
 import numpy as np
-import datetime
+from datetime import datetime
 from .params import NeuralProcessParams
 from .encoder import Encoder
 from .decoder import Decoder
-from .neural_process_utils import create_tokenizer_from_hub_module, create_examples, input_fn_builder, convert_examples_to_features
+from .bert_utils import create_tokenizer_from_hub_module, create_examples, input_fn_builder, convert_examples_to_features
 import bert
+from bert import optimization
 
 # This is a path to an uncased (all lowercase) version of BERT
 BERT_model_hub = "https://tfhub.dev/google/bert_uncased_L-12_H-768_A-12/1"
@@ -43,6 +44,7 @@ class NLP_NeuralProcess(object):
                                num_classes=num_classes)
         self.num_draws = num_draws
         self.num_classes = num_classes
+        self.max_seq_length = max_seq_length
         #     self.estimator = None
         # self.embedder = Embedder()
         #####
@@ -78,7 +80,7 @@ class NLP_NeuralProcess(object):
                      ):
 
         # apply embedder
-        embedder = hub.Module(BERT_model_hub, trainable=True)
+        embedder = hub.Module(BERT_model_hub, trainable=False)
 
         valid_context = (context_input_ids is not None) & (context_input_mask is not None) & (
                     context_segment_ids is not None) & (context_scores is not None)
@@ -282,7 +284,7 @@ class NLP_NeuralProcess(object):
                                                            context_segment_ids,
                                                            context_scores)
 
-            train_op = bert.optimization.create_optimizer(loss, learning_rate, num_train_steps, num_warmup_steps,
+            train_op = optimization.create_optimizer(loss, learning_rate, num_train_steps, num_warmup_steps,
                                                           use_tpu=False)
             ystar, _ = tf.nn.moments(prediction.mu, [0])
             variance, _ = tf.nn.moments(tf.math.square(prediction.sigma), [0])
