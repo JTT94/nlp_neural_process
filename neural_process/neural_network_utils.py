@@ -1,9 +1,5 @@
 # utility methods
 import tensorflow as tf
-from collections import namedtuple
-
-NeuralProcessParams = namedtuple('NeuralProcessParams', ['dim_z', 'n_hidden_units_h', 'n_hidden_units_g'])
-GaussianParams = namedtuple('GaussianParams', ['mu', 'sigma'])
 
 
 def batch_mlp(input, inner_layer_dims, output_dim, variable_scope):
